@@ -25,7 +25,7 @@ public class UnitConverter {
             double miles = meters / 1609.34;
             System.out.printf("%.2f meters is %.3f kilometers or %.3f miles.\n", meters, kilometers, miles);
         } else if (choice.equals("2")) {
-            System.out.print("Enter the length in feet and inches (e.g., 5 7 for 5'7"): ");
+            System.out.print("Enter the length in feet and inches (e.g., 5 7 for 5'7\"): ");
             try {
                 int feet = scanner.nextInt();
                 int inches = scanner.nextInt();
@@ -33,7 +33,7 @@ public class UnitConverter {
                 double centimeters = totalInches * 2.54;
                 System.out.printf("%d feet %d inches is %.2f centimeters.\n", feet, inches, centimeters);
             } catch (Exception e) {
-                System.out.println("Invalid format. Please enter two numbers separated by space (e.g., 5 7 for 5'7").");
+                System.out.println("Invalid format. Please enter two numbers separated by space (e.g., 5 7 for 5'7\").");
                 scanner.nextLine(); // Clear the input buffer
             }
         } else {
