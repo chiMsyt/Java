@@ -1,536 +1,204 @@
-import java.util.Scanner;
+import java.util.Scanner; // Import Scanner for user input
 
-// Node class for Circular Singly Linked List
-class CSNode {
-    int data;       // Data stored in the node
-    CSNode next;    // Pointer to the next node
+// Node class to represent each element in the circular linked list
+class Node {
+    int data;        // Data stored in the node
+    Node next;       // Pointer to the next node in the list
 
-    // Constructor to create a new node with given data
-    public CSNode(int data) {
-        this.data = data;
-        this.next = null;
+    // Constructor: initializes the node with data
+    Node(int data) { 
+        this.data = data; 
     }
 }
 
-// Circular Singly Linked List class
+// Class for Circular Singly Linked List
 class CircularSinglyLinkedList {
-    private CSNode tail;  // We keep a tail pointer for easier circular list management
+    private Node tail; // Tail pointer, keeps track of the last node
 
-    // Constructor initializes an empty list
-    public CircularSinglyLinkedList() {
-        tail = null;
+    // Check if the list is empty
+    public boolean isEmpty() {
+        return tail == null;
     }
 
     // Insert node at the beginning of the list
     public void insertAtBeginning(int data) {
-        CSNode newNode = new CSNode(data); // Create new node
-        if (tail == null) {
-            // List is empty, new node points to itself
-            tail = newNode;
-            tail.next = tail;
+        Node newNode = new Node(data); // Create new node
+        if (isEmpty()) {
+            tail = newNode;         // Tail becomes the new node
+            tail.next = tail;       // Node points to itself (circular link)
         } else {
-            // New node points to head (tail.next)
-            newNode.next = tail.next;
-            // Tail points to new node, making it the new head
-            tail.next = newNode;
+            newNode.next = tail.next; // New node points to head
+            tail.next = newNode;      // Tail points to new node (new head)
         }
     }
 
     // Insert node at the end of the list
     public void insertAtEnd(int data) {
-        CSNode newNode = new CSNode(data); // Create new node
-        if (tail == null) {
-            // Empty list, new node points to itself and becomes tail
-            tail = newNode;
-            tail.next = tail;
-        } else {
-            // New node points to head
-            newNode.next = tail.next;
-            // Old tail points to new node
-            tail.next = newNode;
-            // New node becomes the new tail
-            tail = newNode;
-        }
+        insertAtBeginning(data); // Reuse insertAtBeginning logic
+        tail = tail.next;        // Move tail pointer to the new node
     }
 
-    // Insert node at a given index (0-based)
+    // Insert node at a specific position (0-based index)
     public void insertAtPosition(int data, int index) {
-        if (index < 0) {
-            System.out.println("Invalid index. Must be >= 0.");
+        if (index < 0) { // Negative index check
+            System.out.println("Invalid index");
             return;
         }
-        if (tail == null) {
-            // If list is empty, only index 0 is valid
-            if (index == 0) {
-                insertAtBeginning(data);
-            } else {
-                System.out.println("Index out of range for empty list.");
-            }
+        if (isEmpty() && index > 0) { // Empty list but index not 0
+            System.out.println("Index out of range");
             return;
         }
-        if (index == 0) {
+        if (index == 0) { // Insert at beginning
             insertAtBeginning(data);
             return;
         }
 
-        // Traverse to the node before the insertion point
-        CSNode current = tail.next; // head
-        int count = 0;
-        while (count < index - 1 && current != tail) {
+        Node current = tail.next; // Start from head
+        for (int i = 0; i < index - 1; i++) { // Traverse to node before target index
+            if (current == tail) { // Reached end but index still too large
+                System.out.println("Index out of range");
+                return;
+            }
             current = current.next;
-            count++;
         }
 
-        if (count != index - 1) {
-            System.out.println("Index out of range.");
-            return;
-        }
-
-        CSNode newNode = new CSNode(data);
-        newNode.next = current.next;
+        // Insert new node
+        Node newNode = new Node(data);
+        newNode.next = current.next; 
         current.next = newNode;
 
-        // If inserted at the end, update tail
-        if (current == tail) {
-            tail = newNode;
-        }
+        // If inserted at end, update tail
+        if (current == tail) tail = newNode;
     }
 
     // Delete node at the beginning
     public void deleteAtBeginning() {
-        if (tail == null) {
-            System.out.println("List is empty. Cannot delete.");
+        if (isEmpty()) { // No nodes
+            System.out.println("List empty");
             return;
         }
-        if (tail.next == tail) {
-            // Only one node in the list
+        if (tail.next == tail) { // Only one node
             tail = null;
         } else {
-            // Tail's next points to second node, effectively removing head
-            tail.next = tail.next.next;
+            tail.next = tail.next.next; // Remove head by skipping it
         }
     }
 
     // Delete node at the end
     public void deleteAtEnd() {
-        if (tail == null) {
-            System.out.println("List is empty. Cannot delete.");
+        if (isEmpty()) { // Empty list
+            System.out.println("List empty");
             return;
         }
-        if (tail.next == tail) {
-            // Only one node
+        if (tail.next == tail) { // Only one node
             tail = null;
             return;
         }
-        // Traverse to the node before tail
-        CSNode current = tail.next; // head
+
+        // Traverse to node before tail
+        Node current = tail.next; // Start from head
         while (current.next != tail) {
             current = current.next;
         }
-        // current is now node before tail
-        current.next = tail.next; // point to head
-        tail = current;           // update tail
+
+        // Update links to remove tail
+        current.next = tail.next; 
+        tail = current; // New tail
     }
 
-    // Delete node at a given index (0-based)
+    // Delete node at a specific position (0-based index)
     public void deleteAtPosition(int index) {
-        if (tail == null) {
-            System.out.println("List is empty. Cannot delete.");
+        if (isEmpty() || index < 0) { // Invalid operation
+            System.out.println("Invalid operation");
             return;
         }
-        if (index < 0) {
-            System.out.println("Invalid index. Must be >= 0.");
-            return;
-        }
-        if (index == 0) {
+        if (index == 0) { // Delete first node
             deleteAtBeginning();
             return;
         }
 
-        CSNode current = tail.next; // head
-        int count = 0;
-        // Traverse to node before the one to delete
-        while (count < index - 1 && current != tail) {
+        Node current = tail.next; // Start from head
+        for (int i = 0; i < index - 1; i++) { // Traverse to node before target
+            if (current == tail) { // Reached tail early
+                System.out.println("Index out of range");
+                return;
+            }
             current = current.next;
-            count++;
         }
 
-        if (current == tail || current.next == tail.next) {
-            System.out.println("Index out of range.");
-            return;
-        }
-
-        // If deleting tail node, update tail pointer
-        if (current.next == tail) {
-            current.next = tail.next;
-            tail = current;
-        } else {
-            // Bypass the node to delete
+        if (current.next == tail) { // Deleting tail node
+            deleteAtEnd();
+        } else if (current.next == tail.next) { // Invalid (past end)
+            System.out.println("Index out of range");
+        } else { // Bypass node to delete
             current.next = current.next.next;
         }
     }
 
     // Display the list elements
     public void display() {
-        if (tail == null) {
-            System.out.println("List is empty.");
+        if (isEmpty()) { // Empty list
+            System.out.println("List empty");
             return;
         }
-        CSNode current = tail.next; // head
+
+        Node current = tail.next; // Start from head
         System.out.print("List: ");
         do {
-            System.out.print(current.data + " ");
-            current = current.next;
-        } while (current != tail.next);
+            System.out.print(current.data + " "); // Print data
+            current = current.next;               // Move to next node
+        } while (current != tail.next); // Loop until back at head
         System.out.println();
     }
 }
 
-// Node class for Circular Doubly Linked List
-class CDNode {
-    int data;       // Data stored in the node
-    CDNode next;    // Pointer to the next node
-    CDNode prev;    // Pointer to the previous node
-
-    // Constructor to create a new node with given data
-    public CDNode(int data) {
-        this.data = data;
-        this.next = null;
-        this.prev = null;
-    }
-}
-
-// Circular Doubly Linked List class
-class CircularDoublyLinkedList {
-    private CDNode tail;  // Tail pointer for easier management
-
-    // Constructor initializes empty list
-    public CircularDoublyLinkedList() {
-        tail = null;
-    }
-
-    // Insert node at the beginning
-    public void insertAtBeginning(int data) {
-        CDNode newNode = new CDNode(data);
-        if (tail == null) {
-            // Empty list: new node points to itself in both directions
-            tail = newNode;
-            tail.next = tail;
-            tail.prev = tail;
-        } else {
-            CDNode head = tail.next;
-            newNode.next = head;
-            newNode.prev = tail;
-            head.prev = newNode;
-            tail.next = newNode;
-        }
-    }
-
-    // Insert node at the end
-    public void insertAtEnd(int data) {
-        CDNode newNode = new CDNode(data);
-        if (tail == null) {
-            // Empty list: new node points to itself
-            tail = newNode;
-            tail.next = tail;
-            tail.prev = tail;
-        } else {
-            CDNode head = tail.next;
-            newNode.next = head;
-            newNode.prev = tail;
-            tail.next = newNode;
-            head.prev = newNode;
-            tail = newNode; // new node becomes tail
-        }
-    }
-
-    // Insert node at a given index (0-based)
-    public void insertAtPosition(int data, int index) {
-        if (index < 0) {
-            System.out.println("Invalid index. Must be >= 0.");
-            return;
-        }
-        if (tail == null) {
-            // Empty list: only index 0 is valid
-            if (index == 0) {
-                insertAtBeginning(data);
-            } else {
-                System.out.println("Index out of range for empty list.");
-            }
-            return;
-        }
-        if (index == 0) {
-            insertAtBeginning(data);
-            return;
-        }
-
-        CDNode current = tail.next; // head
-        int count = 0;
-        // Traverse to node before insertion point
-        while (count < index - 1 && current != tail) {
-            current = current.next;
-            count++;
-        }
-
-        if (count != index - 1) {
-            System.out.println("Index out of range.");
-            return;
-        }
-
-        CDNode newNode = new CDNode(data);
-        CDNode nextNode = current.next;
-
-        // Insert newNode between current and nextNode
-        newNode.next = nextNode;
-        newNode.prev = current;
-        current.next = newNode;
-        nextNode.prev = newNode;
-
-        // If inserted at the end, update tail
-        if (current == tail) {
-            tail = newNode;
-        }
-    }
-
-    // Delete node at the beginning
-    public void deleteAtBeginning() {
-        if (tail == null) {
-            System.out.println("List is empty. Cannot delete.");
-            return;
-        }
-        if (tail.next == tail) {
-            // Only one node
-            tail = null;
-        } else {
-            CDNode head = tail.next;
-            CDNode newHead = head.next;
-            tail.next = newHead;
-            newHead.prev = tail;
-        }
-    }
-
-    // Delete node at the end
-    public void deleteAtEnd() {
-        if (tail == null) {
-            System.out.println("List is empty. Cannot delete.");
-            return;
-        }
-        if (tail.next == tail) {
-            // Only one node
-            tail = null;
-        } else {
-            CDNode prevNode = tail.prev;
-            CDNode head = tail.next;
-            prevNode.next = head;
-            head.prev = prevNode;
-            tail = prevNode;
-        }
-    }
-
-    // Delete node at a given index (0-based)
-    public void deleteAtPosition(int index) {
-        if (tail == null) {
-            System.out.println("List is empty. Cannot delete.");
-            return;
-        }
-        if (index < 0) {
-            System.out.println("Invalid index. Must be >= 0.");
-            return;
-        }
-        if (index == 0) {
-            deleteAtBeginning();
-            return;
-        }
-
-        CDNode current = tail.next; // head
-        int count = 0;
-        // Traverse to node at index
-        while (count < index && current != tail) {
-            current = current.next;
-            count++;
-        }
-
-        if (count != index) {
-            System.out.println("Index out of range.");
-            return;
-        }
-
-        // If deleting tail node, update tail pointer
-        if (current == tail) {
-            deleteAtEnd();
-            return;
-        }
-
-        // Remove current node by updating links
-        CDNode prevNode = current.prev;
-        CDNode nextNode = current.next;
-        prevNode.next = nextNode;
-        nextNode.prev = prevNode;
-    }
-
-    // Display the list elements
-    public void display() {
-        if (tail == null) {
-            System.out.println("List is empty.");
-            return;
-        }
-        CDNode current = tail.next; // head
-        System.out.print("List: ");
-        do {
-            System.out.print(current.data + " ");
-            current = current.next;
-        } while (current != tail.next);
-        System.out.println();
-    }
-}
-
-// Main class with menu-driven program
+// Main driver class with menu
 public class CircularLinkedListDemo {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        CircularSinglyLinkedList csList = new CircularSinglyLinkedList();
-        CircularDoublyLinkedList cdList = new CircularDoublyLinkedList();
+        Scanner sc = new Scanner(System.in); // Scanner for input
+        CircularSinglyLinkedList list = new CircularSinglyLinkedList(); // Create list
 
         while (true) {
-            System.out.println("\nSelect Linked List Type:");
-            System.out.println("1. Circular Singly Linked List");
-            System.out.println("2. Circular Doubly Linked List");
-            System.out.println("3. Exit");
-            System.out.print("Choice: ");
-            int listChoice = scanner.nextInt();
+            // Main menu
+            System.out.println("\n1.Insert 2.Delete 3.Display 4.Exit");
+            int choice = sc.nextInt(); // User choice
+            if (choice == 4) break;    // Exit condition
 
-            if (listChoice == 3) {
-                System.out.println("Exiting program.");
-                break;
-            }
+            switch (choice) {
+                case 1: // Insert operations
+                    System.out.println("Insert at: 1.Beginning 2.Position 3.End");
+                    int pos = sc.nextInt(); // Choose insertion type
+                    System.out.print("Enter data: ");
+                    int data = sc.nextInt(); // Value to insert
+                    if (pos == 1) list.insertAtBeginning(data);
+                    else if (pos == 2) {
+                        System.out.print("Enter index: ");
+                        int idx = sc.nextInt();
+                        list.insertAtPosition(data, idx);
+                    } else if (pos == 3) list.insertAtEnd(data);
+                    else System.out.println("Invalid position");
+                    break;
 
-            if (listChoice != 1 && listChoice != 2) {
-                System.out.println("Invalid choice. Try again.");
-                continue;
-            }
+                case 2: // Delete operations
+                    System.out.println("Delete at: 1.Beginning 2.Position 3.End");
+                    int delPos = sc.nextInt(); // Choose deletion type
+                    if (delPos == 1) list.deleteAtBeginning();
+                    else if (delPos == 2) {
+                        System.out.print("Enter index: ");
+                        int idx = sc.nextInt();
+                        list.deleteAtPosition(idx);
+                    } else if (delPos == 3) list.deleteAtEnd();
+                    else System.out.println("Invalid position");
+                    break;
 
-            while (true) {
-                System.out.println("\nSelect Operation:");
-                System.out.println("1. Insert");
-                System.out.println("2. Delete");
-                System.out.println("3. Display");
-                System.out.println("4. Change List Type / Exit to main menu");
-                System.out.print("Choice: ");
-                int opChoice = scanner.nextInt();
+                case 3: // Display list
+                    list.display();
+                    break;
 
-                if (opChoice == 4) {
-                    break; // Exit to list type selection
-                }
-
-                switch (opChoice) {
-                    case 1: // Insert
-                        System.out.println("Insert at:");
-                        System.out.println("1. Beginning");
-                        System.out.println("2. Intermediate Position");
-                        System.out.println("3. End");
-                        System.out.print("Choice: ");
-                        int insertChoice = scanner.nextInt();
-
-                        System.out.print("Enter data to insert: ");
-                        int data = scanner.nextInt();
-
-                        if (listChoice == 1) { // Circular Singly Linked List
-                            switch (insertChoice) {
-                                case 1:
-                                    csList.insertAtBeginning(data);
-                                    break;
-                                case 2:
-                                    System.out.print("Enter index (0-based): ");
-                                    int index = scanner.nextInt();
-                                    csList.insertAtPosition(data, index);
-                                    break;
-                                case 3:
-                                    csList.insertAtEnd(data);
-                                    break;
-                                default:
-                                    System.out.println("Invalid choice.");
-                            }
-                            csList.display();
-                        } else { // Circular Doubly Linked List
-                            switch (insertChoice) {
-                                case 1:
-                                    cdList.insertAtBeginning(data);
-                                    break;
-                                case 2:
-                                    System.out.print("Enter index (0-based): ");
-                                    int index = scanner.nextInt();
-                                    cdList.insertAtPosition(data, index);
-                                    break;
-                                case 3:
-                                    cdList.insertAtEnd(data);
-                                    break;
-                                default:
-                                    System.out.println("Invalid choice.");
-                            }
-                            cdList.display();
-                        }
-                        break;
-
-                    case 2: // Delete
-                        System.out.println("Delete at:");
-                        System.out.println("1. Beginning");
-                        System.out.println("2. Intermediate Position");
-                        System.out.println("3. End");
-                        System.out.print("Choice: ");
-                        int deleteChoice = scanner.nextInt();
-
-                        if (listChoice == 1) { // Circular Singly Linked List
-                            switch (deleteChoice) {
-                                case 1:
-                                    csList.deleteAtBeginning();
-                                    break;
-                                case 2:
-                                    System.out.print("Enter index (0-based): ");
-                                    int index = scanner.nextInt();
-                                    csList.deleteAtPosition(index);
-                                    break;
-                                case 3:
-                                    csList.deleteAtEnd();
-                                    break;
-                                default:
-                                    System.out.println("Invalid choice.");
-                            }
-                            csList.display();
-                        } else { // Circular Doubly Linked List
-                            switch (deleteChoice) {
-                                case 1:
-                                    cdList.deleteAtBeginning();
-                                    break;
-                                case 2:
-                                    System.out.print("Enter index (0-based): ");
-                                    int index = scanner.nextInt();
-                                    cdList.deleteAtPosition(index);
-                                    break;
-                                case 3:
-                                    cdList.deleteAtEnd();
-                                    break;
-                                default:
-                                    System.out.println("Invalid choice.");
-                            }
-                            cdList.display();
-                        }
-                        break;
-
-                    case 3: // Display
-                        if (listChoice == 1) {
-                            csList.display();
-                        } else {
-                            cdList.display();
-                        }
-                        break;
-
-                    default:
-                        System.out.println("Invalid operation choice.");
-                }
+                default: // Invalid menu choice
+                    System.out.println("Invalid choice");
             }
         }
-
-        scanner.close();
+        sc.close(); // Close Scanner
     }
 }
