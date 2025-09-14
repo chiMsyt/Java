@@ -46,7 +46,7 @@ public class TowersOfHanoi {
     }
 
     public static void main(String[] args) {
-        int n = 3; // Example: 3 disks
+        int n = 10; // Example: 3 disks
         solveHanoi(n, 'A', 'C', 'B'); // Source=A, Destination=C, Auxiliary=B
     }
 }
