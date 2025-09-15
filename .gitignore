@@ -1,0 +1,14 @@
+# Ignore compiled Java classes
+bin/
+
+# Ignore IDE-specific metadata
+.classpath
+.project
+.settings/
+
+# Ignore VS Code metadata
+.vscode/
+
+# Ignore OS junk
+.DS_Store
+Thumbs.db

@@ -1,3 +1,60 @@
 {
-    "workbench.colorTheme": "Monokai"
+  // ---------------------------
+  // JAVA PROJECT CONFIG
+  // ---------------------------
+
+  // Tell Cursor where my Java source lives (my GitHub repo root)
+  "java.project.sourcePaths": [
+    "C:/Users/PC/Desktop/THINGS/GITHUB/Java"
+  ],
+
+  // Where compiled .class files go (VS Code Java extension setting)
+  "java.project.outputPath": "bin",
+  "java.settings.compile.outputPath": "bin",
+
+  // Include any JAR libraries I might add in /lib/
+  "java.project.referencedLibraries": [
+    "lib/**/*.jar"
+  ],
+
+  // Prevent metadata files from cluttering my repo
+  "java.import.generatesMetadataFilesAtProjectRoot": false,
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "bin/": true
+  },
+
+  // ---------------------------
+  // FORMATTING & STYLE
+  // ---------------------------
+  "editor.formatOnSave": true,
+  "java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml",
+  "java.format.settings.profile": "GoogleStyle",
+
+  // ---------------------------
+  // JAVA BEHAVIOR
+  // ---------------------------
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.errors.incompleteClasspath.severity": "ignore",
+  "java.configuration.checkProjectSettingsExclusions": false,
+
+  // Completion order (helps organize imports consistently)
+  "java.completion.importOrder": [
+    "java",
+    "javax",
+    "com",
+    "org"
+  ],
+  "java.completion.favoriteStaticMembers": [
+    "org.junit.Assert.*",
+    "org.junit.Assume.*",
+    "org.junit.jupiter.api.Assertions.*",
+    "org.junit.jupiter.api.Assumptions.*",
+    "org.junit.jupiter.api.DynamicContainer.*",
+    "org.junit.jupiter.api.DynamicTest.*"
+  ],
+
+  "workbench.colorTheme": "Monokai"
 }

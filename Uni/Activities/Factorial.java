@@ -1,4 +1,4 @@
-package Java.Uni.Activities;
+package Uni.Activities;
 
 // =======================================
 // 1. Factorial of a given number
