@@ -1,7 +1,5 @@
 package Uni.Activities.Examples;
 
-import Prelim.SinglyLinkedList;
-
 public class SinglyLinkedList 
 
 {    

@@ -1,7 +1,5 @@
 package Uni.Activities.Examples;
 
-import Prelim.DoublyLinkedList;
-
 public class DoublyLinkedList 
 
 {    
